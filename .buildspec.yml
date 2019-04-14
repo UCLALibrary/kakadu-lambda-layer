@@ -1,0 +1,23 @@
+version: 0.2
+
+# This is an AWS CodeBuild configuration file. It's used to build the Docker
+# image and publish the AWS Lambda layer.
+
+env:
+  parameter-store:
+    DOCKERHUB_USERNAME: "kakadu.layer.dockerhub.username"
+    DOCKERHUB_PASSWORD: "kakadu.layer.dockerhub.password"
+    KAKADU_VERSION: "kakadu.version"
+
+phases:
+  install:
+    commands:
+      - echo "Entered the install phase..."
+      - apt-get update -y -qq
+  build:
+    commands:
+      - echo "Entered the build phase..."
+      # Copy our Kakadu source code into the local dir so Docker can find it
+      # The source code is in a secondary private repo pulled in by CodeBuild
+      - cp -r ${CODEBUILD_SRC_DIR_KAKADU}/${KAKADU_VERSION} kakadu
+      - docker build -t kakadu-lambda-layer .
