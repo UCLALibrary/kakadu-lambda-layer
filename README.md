@@ -1,10 +1,10 @@
 # kakadu-lambda-layer
 
-An AWS Lambda layer that provides Kakadu's functionality to other AWS Lambda functions.
+An [AWS Lambda](https://aws.amazon.com/lambda/) layer that provides Kakadu's functionality to other AWS [Lambda functions](https://docs.aws.amazon.com/lambda/latest/dg/lambda-introduction-function.html).
 
 ### Prerequisites
 
-In order to build the Lambda layer, you must have a few prerequisites available and/or pre-installed on your system:
+In order to build the [Lambda layer](https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html), you must have a few prerequisites available and/or pre-installed on your system:
 
 * [img2lambda](https://github.com/awslabs/aws-lambda-container-image-converter)
 * [docker](https://www.docker.com/products/docker-engine)
