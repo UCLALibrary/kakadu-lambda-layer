@@ -32,11 +32,17 @@ RUN  cd /build/kakadu/make && \
 # Same Amazon Linux version as Lambda execution environment AMI
 FROM amazonlinux:2017.03.1.20170812
 
-# Create the directory that we'll be putting Kakadu into
-WORKDIR /opt/kakadu
+# Create the directory that we'll be putting Kakadu libs into
+WORKDIR /opt/lib
 
-# Copy the files we'll need into a clean Docker image
-COPY --from=KAKADU_BUILDER /build/kakadu/*.so /build/kakadu/kdu_* /opt/kakadu/
+# Copy the library files we'll need into a clean Docker image
+COPY --from=KAKADU_BUILDER /build/kakadu/*.so /opt/lib/
+
+# Create the directory that we'll be putting Kakadu bins into
+WORKDIR /opt/bin
+
+#Copy the binary files we'll need into the clean Docker image
+COPY --from=KAKADU_BUILDER /build/kakadu/kdu_* /opt/bin/
 
 # Image is used to build an AWS Lambda layer; it doesn't need to _do_ anything
 CMD ["sh", "-c", "tail -f /dev/null"]
