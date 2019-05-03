@@ -16,9 +16,14 @@ COPY kakadu /build/kakadu/
 
 # Lock to 2017.03 release (same as Lambda) and install compilation dependencies
 RUN sed -i 's;^releasever.*;releasever=2017.03;;' /etc/yum.conf && \
+  yum install -y --setopt=skip_missing_names_on_install=False \
+    gcc-4.8.3 \
+    gcc-c++-4.8.3 \
+    make-3.82 \
+    libtiff-4.0.3 \
+    libtiff-devel-4.0.3 && \
   yum update -y && \
-  yum clean all && \
-  yum install -y gcc gcc-c++ make
+  yum clean all
 
 # Compile Kakadu library, but do a clean first to make sure the directory is clean
 RUN  cd /build/kakadu/make && \
