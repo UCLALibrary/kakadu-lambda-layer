@@ -6,7 +6,7 @@
 
 # Same Amazon Linux version as Lambda execution environment AMI
 # Cf. https://docs.aws.amazon.com/lambda/latest/dg/current-supported-versions.html
-FROM amazonlinux:2017.03.1.20170812 as KAKADU_BUILDER
+FROM amazonlinux:2.0.20191217.0 as KAKADU_BUILDER
 
 # Our build directory where the Kakadu source will be located
 WORKDIR /build/kakadu/
@@ -14,11 +14,11 @@ WORKDIR /build/kakadu/
 # Kakadu source should be installed in a 'kakadu' directory in this project's root
 COPY kakadu /build/kakadu/
 
-# Lock to 2017.03 release (same as Lambda) and install compilation dependencies
-RUN sed -i 's;^releasever.*;releasever=2017.03;;' /etc/yum.conf && \
+# Lock to 2019.12 release (same as Lambda) and install compilation dependencies
+RUN sed -i 's;^releasever.*;releasever=2019.12;' /etc/yum.conf && \
   yum install -y --setopt=skip_missing_names_on_install=False \
-    gcc-4.8.3 \
-    gcc-c++-4.8.3 \
+    gcc-7.3.1 \
+    gcc-c++-7.3.1 \
     make-3.82 \
     libtiff-4.0.3 \
     libtiff-devel-4.0.3 && \
@@ -35,7 +35,7 @@ RUN  cd /build/kakadu/make && \
   cp ../bin/Linux-x86-64-gcc/kdu_jp2info /build/kakadu
 
 # Same Amazon Linux version as Lambda execution environment AMI
-FROM amazonlinux:2017.03.1.20170812
+FROM amazonlinux:2.0.20191217.0
 
 # Create the directory that we'll be putting Kakadu libs into
 WORKDIR /opt/lib
