@@ -43,11 +43,15 @@ WORKDIR /opt/lib
 # Copy the library files we'll need into a clean Docker image
 COPY --from=KAKADU_BUILDER /build/kakadu/*.so /opt/lib/
 
+RUN if ls /opt/lib/libkdu_v*.so 1> /dev/null 2>&1; then echo "Kakadu lib installed"; fi
+
 # Create the directory that we'll be putting Kakadu bins into
 WORKDIR /opt/bin
 
 #Copy the binary files we'll need into the clean Docker image
 COPY --from=KAKADU_BUILDER /build/kakadu/kdu_* /opt/bin/
+
+RUN if [ -f "/opt/bin/kdu_compress" ]; then echo "Kakadu bin installed"; fi
 
 # Image is used to build an AWS Lambda layer; it doesn't need to _do_ anything
 CMD ["sh", "-c", "tail -f /dev/null"]
