@@ -20,15 +20,17 @@ The installation instructions for the other two prerequisites can be found on th
 
 Once you have all the prerequisites mentioned in the introduction installed, you're ready to generate an AWS Lambda layer. First, build the Docker image:
 
-    docker build -t kakadu-lambda-layer .
+    docker build --squash -t kakadu-lambda-layer .
 
-Then, you can run the image converter. This will generate the AWS Lambda layer:
+Note that the `squash` argument is an experimental Docker feature; to use it, experimental features must be enabled in your local Docker daemon.
 
-    img2lambda -i kakadu-lambda-layer:latest -r us-east-2
+After building your Docker image, you can run the image converter. This will generate the AWS Lambda layer from your Docker image:
+
+    img2lambda -i kakadu-lambda-layer:latest -r us-east-1
 
 You can choose to use a different region or, in addition, use any of the other configuration options that are described in the image converter's documentation. You, of course, have to be using an AWS account that has the proper permissions to create a Lambda layer. These credentials are often stored in the local `~/.aws/credentials` file. For more information about what permissions are needed, consult img2lambda's documentation on their GitHub page.
 
-Once you have run the above, you will have the new layer's information written to a `output/layers.json` file. This file can be fed to an AWS Lambda function's deployment. This will cause your function to use the Kakadu layer as its base.
+Once you have run the above, you will have the new layer's information written to a `output/layers.yaml` file. The value(s) from this file can be fed to an AWS Lambda function's deployment. This will allow your AWS Lambda function to use the Kakadu layer as its base.
 
 ### Contact
 
