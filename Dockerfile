@@ -35,7 +35,7 @@ RUN  cd /build/kakadu/make && \
   cp ../bin/Linux-x86-64-gcc/kdu_compress /build/kakadu/artifacts && \
   cp ../bin/Linux-x86-64-gcc/kdu_expand /build/kakadu/artifacts && \
   cp ../bin/Linux-x86-64-gcc/kdu_jp2info /build/kakadu/artifacts && \
-  cp /usr/lib64/libtiff*.so /build/kakadu/artifacts && \
+  cp /usr/lib64/libtiff*.so* /build/kakadu/artifacts && \
   cp /usr/lib64/libjpeg.so.* /build/kakadu/artifacts && \
   cp /usr/lib64/libjbig.so.* /build/kakadu/artifacts
 
@@ -47,29 +47,15 @@ WORKDIR /opt/lib
 
 # Copy the library files we'll need into a clean Docker image
 COPY --from=KAKADU_BUILDER /build/kakadu/artifacts/*.so /opt/lib/
+COPY --from=KAKADU_BUILDER /build/kakadu/artifacts/libtiff*.so* /opt/lib/
 COPY --from=KAKADU_BUILDER /build/kakadu/artifacts/libjpeg.so.* /opt/lib/
 COPY --from=KAKADU_BUILDER /build/kakadu/artifacts/libjbig.so.* /opt/lib/
-
-# Let's use symlinks to conserve space on our final Lambda image
-RUN cd /opt/lib && \
-  ln -s libtiffxx.so libtiffxx.so.5.2.0 && \
-  ln -s libtiffxx.so libtiffxx.so.5 && \
-  ln -s libtiff.so libtiff.so.5.2.0 && \
-  ln -s libtiff.so libtiff.so.5
-
-# Then we can output a little human friendly output to confirm stuff is installed
-RUN if ls /opt/lib/libkdu_v*.so 1> /dev/null 2>&1; then echo "Kakadu libs installed"; fi
-RUN if ls /opt/lib/libtiff.so.* 1> /dev/null 2>&1; then echo "TIFF libs installed"; fi
-RUN if ls /opt/lib/libjpeg.so.* 1> /dev/null 2>&1; then echo "JPEG libs installed"; fi
-RUN if ls /opt/lib/libjbig.so.* 1> /dev/null 2>&1; then echo "JBIG libs installed"; fi
 
 # Create the directory that we'll be putting Kakadu bins into
 WORKDIR /opt/bin
 
 # Copy the binary files we'll need into the clean Docker image
 COPY --from=KAKADU_BUILDER /build/kakadu/artifacts/kdu_* /opt/bin/
-
-RUN if [ -f "/opt/bin/kdu_compress" ]; then echo "Kakadu bins installed"; fi
 
 # Image is used to build an AWS Lambda layer; it doesn't need to _do_ anything
 CMD ["sh", "-c", "tail -f /dev/null"]
